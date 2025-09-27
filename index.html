@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Mirror & Lenses<\/title>
+  <style>
+    :root{--bg:#0b1020;--accent:#ffcc00;--muted:#98a0b3}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:#fff}
+    .wrap{display:grid;height:100%;place-items:center}
+
+    /* initial fake loading card */
+    .card{width:92%;max-width:760px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.06));border-radius:14px;padding:32px;box-shadow:0 8px 30px rgba(0,0,0,0.6);text-align:center}
+    h1{margin:0 0 8px;font-size:28px}
+    p{margin:0 0 20px;color:var(--muted)}
+    .progress{height:12px;background:rgba(255,255,255,0.06);border-radius:10px;overflow:hidden}
+    .bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),#ffd54a);transition:width 400ms linear}
+
+    /* big prank screen */
+    .prank{display:none;flex-direction:column;align-items:center;justify-content:center;height:100%;width:100%;position:fixed;inset:0;background:#0b1020}
+    .big{font-size:84px;line-height:1;margin:0}
+    .sub{font-size:20px;color:var(--muted);margin-top:12px}
+    .btnrow{margin-top:26px;display:flex;gap:14px}
+    button{background:transparent;border:2px solid rgba(255,255,255,0.12);color:#fff;padding:10px 16px;border-radius:10px;font-weight:600;cursor:pointer}
+    .cta{background:var(--accent);border-color:transparent;color:#111}
+
+    /* confetti (small, fun) */
+    .confetti{position:fixed;inset:0;pointer-events:none}
+    .confetti span{position:absolute;width:10px;height:14px;opacity:0;transform:translateY(-50px) rotate(0);animation:fall linear forwards}
+    @keyframes fall{to{transform:translateY(120vh) rotate(720deg);opacity:1}}
+
+    /* subtle typewriter for the reveal */
+    .typed{font-family:monospace;background:linear-gradient(90deg,#fff, #fff);-webkit-background-clip:text;background-clip:text;color:transparent;white-space:nowrap;overflow:hidden}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card" id="card">
+      <h1 id="title">Mirror & Lenses — Verifying product availability...</h1>
+      <p id="desc">Please wait while we run a quick safety check (totally normal stuff)</p>
+      <div class="progress" aria-hidden="true">
+        <div class="bar" id="bar"></div>
+      </div>
+      <p style="font-size:12px;margin-top:14px;color:var(--muted)">Mirror & Lenses — Inventory verification.</p>
+    </div>
+  </div>
+
+  <div class="prank" id="prank" role="dialog" aria-hidden="true">
+    <div style="text-align:center">
+      <h1 class="big" id="big">😈 GOTCHA!</h1>
+      <div class="sub" id="reveal">You just opened a prank page. All good — no files were harmed.</div>
+      <div class="btnrow">
+        <button id="replay">Play again</button>
+        <button id="more" class="cta">Show surprise</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="confetti" id="confetti" aria-hidden="true"></div>
+
+  <script>
+    // Progress simulation (keeps everything local, no external calls)
+    const bar = document.getElementById('bar');
+    const title = document.getElementById('title');
+    const desc = document.getElementById('desc');
+    const card = document.getElementById('card');
+    const prank = document.getElementById('prank');
+    const big = document.getElementById('big');
+    const reveal = document.getElementById('reveal');
+
+    let pct = 0;
+    const steps = [10, 28, 47, 63, 78, 91, 100];
+    function step() {
+      const next = steps.shift();
+      if(next==null) return showPrank();
+      pct = next;
+      bar.style.width = pct + '%';
+      // change messages a bit
+      const msgs = [
+        'Analyzing your cookies... (just kidding)',
+        'Scanning for unicorns...',
+        'Poking the server (gently)...',
+        'Asking politely for permission...',
+        'Optimizing your sense of humor...',
+        'Almost done... preparing reveal'
+      ];
+      title.textContent = msgs[Math.floor(Math.random()*msgs.length)];
+      setTimeout(step, 700 + Math.random()*800);
+    }
+
+    function showPrank(){
+      // hide loading card and show prank overlay
+      card.style.transition = 'opacity 300ms';
+      card.style.opacity = '0';
+      setTimeout(()=>card.style.display = 'none', 350);
+      prank.style.display = 'flex';
+      prank.setAttribute('aria-hidden','false');
+      // small typewriter reveal
+      reveal.innerHTML = '';
+      typeText(reveal, 'You just opened a prank page. Nothing was damaged—promise!');
+      launchConfetti();
+    }
+
+    function typeText(el, text){
+      let i=0;
+      el.classList.add('typed');
+      const t = setInterval(()=>{
+        el.textContent = text.slice(0,i++);
+        if(i>text.length){
+          clearInterval(t);
+          el.classList.remove('typed');
+        }
+      }, 30);
+    }
+
+    // confetti generator (small, harmless)
+    function launchConfetti(count=32){
+      const container = document.getElementById('confetti');
+      container.innerHTML = '';
+      for(let i=0;i<count;i++){
+        const s = document.createElement('span');
+        s.style.left = Math.random()*100 + '%';
+        s.style.top = (-10 - Math.random()*20) + 'vh';
+        s.style.width = (6 + Math.random()*10) + 'px';
+        s.style.height = (10 + Math.random()*14) + 'px';
+        s.style.background = hsl(${Math.floor(Math.random()*360)} 70% 60%);
+        s.style.transform = rotate(${Math.random()*360}deg);
+        s.style.animationDuration = (2 + Math.random()*2) + 's';
+        container.appendChild(s);
+      }
+    }
+
+    // buttons
+    document.getElementById('replay').addEventListener('click', ()=> location.reload());
+    document.getElementById('more').addEventListener('click', ()=>{
+      // a little playful wobble and text change
+      big.textContent = '🎉 SURPRISE!';
+      reveal.textContent = 'Share it with a friend (responsibly).';
+    });
+
+    // start the progress simulation after tiny delay
+    setTimeout(step, 600);
+
+    // Safety note: this page does not collect or transmit data. It's all local.
+  </script>
+</body>
+</html>
