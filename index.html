@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Mirror & Lenses<\/title>
+  <title>Mirror & Lenses</title>
   <style>
     :root{--bg:#0b1020;--accent:#ffcc00;--muted:#98a0b3}
     html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:#fff}
@@ -119,29 +119,20 @@
       container.innerHTML = '';
       for(let i=0;i<count;i++){
         const s = document.createElement('span');
-        s.style.left = Math.random()*100 + '%';
-        s.style.top = (-10 - Math.random()*20) + 'vh';
-        s.style.width = (6 + Math.random()*10) + 'px';
-        s.style.height = (10 + Math.random()*14) + 'px';
-        s.style.background = hsl(${Math.floor(Math.random()*360)} 70% 60%);
-        s.style.transform = rotate(${Math.random()*360}deg);
-        s.style.animationDuration = (2 + Math.random()*2) + 's';
+        s.style.left = Math.random()*100+'vw';
+        s.style.background = hsl(${Math.random()*360},80%,60%);
+        s.style.animationDuration = (3+Math.random()*2)+'s';
+        s.style.animationDelay = (Math.random()*1)+'s';
         container.appendChild(s);
       }
     }
 
     // buttons
-    document.getElementById('replay').addEventListener('click', ()=> location.reload());
-    document.getElementById('more').addEventListener('click', ()=>{
-      // a little playful wobble and text change
-      big.textContent = '🎉 SURPRISE!';
-      reveal.textContent = 'Share it with a friend (responsibly).';
-    });
+    document.getElementById('replay').onclick=()=>{location.reload()};
+    document.getElementById('more').onclick=()=>alert('🎉 Surprise! You found the hidden button.');
 
-    // start the progress simulation after tiny delay
-    setTimeout(step, 600);
-
-    // Safety note: this page does not collect or transmit data. It's all local.
+    // start
+    setTimeout(step, 700);
   </script>
 </body>
 </html>
